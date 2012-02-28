@@ -24,9 +24,6 @@
 #####################################################################################
 
 
-from copy import copy
-
-
 def transpose(seq, n):
     return map(lambda note: note + n, seq)
 
@@ -36,7 +33,7 @@ def rotate(seq, n):
 
 
 def reverse(seq):
-    tmp = copy(seq)
+    tmp = seq * 1
     tmp.reverse()
     return tmp
 
@@ -44,4 +41,3 @@ def reverse(seq):
 def invert(seq, root_index=0):
     root = seq[root_index]
     return map(lambda note: 2 * root - note, seq)
-

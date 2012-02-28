@@ -65,7 +65,7 @@ class System(object):
         raise TypeError("Pitch table is read-only")
 
     def __getitem__(self, key):
-        """Provides a shortcut to multiple pitch conversion methods"""
+        """Provides a shortcut to pitch lookup"""
         return self.pitch(key)
 
     def pitch(self, from_value):
