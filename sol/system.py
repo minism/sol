@@ -28,12 +28,13 @@ __all__ = ['System', 'TwelveToneSystem']
 
 import re
 
+from sol.utils import GetOnlyObject
 
 # A0 value for 440 tuning
 STANDARD_A0 = 27.5
 
 
-class System(object):
+class System(GetOnlyObject):
     """Tone system that provides a mapping from steps to pitches
 
     Keyword Arguments:
@@ -59,10 +60,6 @@ class System(object):
         if self.name:
             return self.name
         return "System: %s/%s" % (self.divisions, self.octaves, )
-
-    def __setitem__(self, key, val):
-        """Defined so we can raise a more useful error"""
-        raise TypeError("Pitch table is read-only")
 
     def __getitem__(self, key):
         """Provides a shortcut to pitch lookup"""
