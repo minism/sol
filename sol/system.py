@@ -23,6 +23,9 @@
 #                                                                                   #
 #####################################################################################
 
+__all__ = ['System', 'TwelveToneSystem']
+
+
 import re
 
 
@@ -63,21 +66,22 @@ class System(object):
 
     def __getitem__(self, key):
         """Provides a shortcut to multiple pitch conversion methods"""
-        if isinstance(key, str):
-            return self.stringToPitch(key)
-        return self.stepToPitch(key)
+        return self.pitch(key)
 
-    def stepToPitch(self, step):
-        """Convert a step value into a pitch value in hz"""
-        assert isinstance(step, int), "Steps must be integers"
+    def pitch(self, from_value):
+        """Convert a step (int) or note name (string) value into a pitch value in hz"""
+        if isinstance(from_value, str):
+            return self.pitch(self.step(from_value))
+        step = from_value
         if self._pitchtable.has_key(step):
             return self._pitchtable[step]
         pitch = (1 + self.octaves) ** (step / float(self.divisions)) * self.root
         self._pitchtable[step] = pitch
         return pitch
 
-    def stringToPitch(self, note_name):
-        raise NotImplementedError("This system hasnt implemented stringToPitch")
+    def step(self, note_name):
+        """Convert a note name into a step"""
+        raise NotImplementedError
 
 
 class TwelveToneSystem(System):
@@ -100,7 +104,9 @@ class TwelveToneSystem(System):
     def __init__(self, root=None):
         super(TwelveToneSystem, self).__init__(octaves=1, divisions=12, root=root)
 
-    def stringToPitch(self, note_name):
+    def step(self, note_name):
+        if not isinstance(note_name, str):
+            raise TypeError("Only makes sense with string")
         match = re.match(self.note_re, note_name)
         if not match:
             raise TypeError("Invalid note name: %s" % note_name)
