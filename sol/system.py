@@ -95,7 +95,7 @@ class TwelveToneSystem(System):
         'F': 8,
         'G': 10,
     }
-    note_re = re.compile(r'^([A-G])([#|b]*)(\d)+$')
+    note_re = re.compile(r'^([A-G])(#*|b*)(\d)+$')
 
     def __init__(self, root=None):
         super(TwelveToneSystem, self).__init__(octaves=1, divisions=12, root=root)
