@@ -23,8 +23,12 @@
 #                                                                                   #
 #####################################################################################
 
-import os
-import urllib
+import re
+
+
+# A0 value for 440 tuning
+STANDARD_A0 = 27.5
+
 
 class System(object):
     """Tone system that provides a mapping from steps to pitches
@@ -34,10 +38,12 @@ class System(object):
         divisions   number of subdivisions per octave
         root=27.5   pitch value for A0 
     """
-    def __init__(self, octaves=None, divisions=None, root=27.5, name=None):
+    def __init__(self, octaves=None, divisions=None, root=None, name=None):
         # Parse args
         if not all((octaves, divisions)):
             raise TypeError("Must specify number of octaves and divisions.")
+        if not root:
+            root = STANDARD_A0
         self.octaves = octaves
         self.divisions = divisions
         self.root = root
@@ -70,7 +76,38 @@ class System(object):
         self._pitchtable[step] = pitch
         return pitch
 
-    def stringToPitch(self, string):
+    def stringToPitch(self, note_name):
         raise NotImplementedError("This system hasnt implemented stringToPitch")
 
 
+class TwelveToneSystem(System):
+    """Standard twelve tone system with note name string parsing
+
+    Keyword Arguments:
+        root=27.5   pitch value for A0
+    """
+    step_table = {
+        'A': 0,
+        'B': 2,
+        'C': 3,
+        'D': 5,
+        'E': 7,
+        'F': 8,
+        'G': 10,
+    }
+    note_re = re.compile(r'^([A-G])([#|b]*)(\d)+$')
+
+    def __init__(self, root=None):
+        super(TwelveToneSystem, self).__init__(octaves=1, divisions=12, root=root)
+
+    def stringToPitch(self, note_name):
+        match = re.match(self.note_re, note_name)
+        if not match:
+            raise TypeError("Invalid note name: %s" % note_name)
+        letter = match.group(1)
+        mod = match.group(2)
+        octave = int(match.group(3))
+        step = self.divisions * octave + self.step_table[letter]
+        for token in mod:
+            step += token == '#' and 1 or -1
+        return step
