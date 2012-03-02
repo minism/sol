@@ -1,6 +1,6 @@
 #####################################################################################
 #                                                                                   #
-# sol/mode.py                                                                       #
+# sol/sequence.py                                                                   #
 #                                                                                   #
 # Copyright (c) 2012 Josh Bothun <joshbothun@gmail.com>                             #
 #                                                                                   #
@@ -23,18 +23,25 @@
 #                                                                                   #
 #####################################################################################
 
-from sol.sequence import rotate
 
-diatonic    = [2, 2, 1, 2, 2, 2, 1]
+from copy import copy
 
-ionian      = rotate(diatonic, 0)
-dorian      = rotate(diatonic, 1)
-phrygian    = rotate(diatonic, 2)
-lydian      = rotate(diatonic, 3)
-mixolydian  = rotate(diatonic, 4)
-aeolean     = rotate(diatonic, 5)
-locrian     = rotate(diatonic, 6)
 
-harmonic    = [2, 1, 2, 2, 1, 3, 1]
+def transpose(seq, n):
+    return map(lambda note: note + n, seq)
 
-melodic     = [2, 1, 2, 2, 2, 2, 1]
+
+def rotate(seq, n):
+    return seq[n:] + seq[:n]
+
+
+def reverse(seq):
+    tmp = copy(seq)
+    tmp.reverse()
+    return tmp
+
+
+def invert(seq, root_index=0):
+    root = seq[root_index]
+    return map(lambda note: 2 * root - note, seq)
+
