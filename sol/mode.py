@@ -25,6 +25,10 @@
 
 from sol.sequence import rotate
 
+pentatonic  = [2, 2, 3, 2, 3]
+major_pentatonic = pentatonic
+minor_pentatonic = rotate(pentatonic, -1)
+
 diatonic    = [2, 2, 1, 2, 2, 2, 1]
 
 ionian      = rotate(diatonic, 0)
