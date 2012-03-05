@@ -7,3 +7,4 @@ tts = TwelveToneSystem()
 
 from sol.scale import *
 from sol import mode
+from sol import sequence
